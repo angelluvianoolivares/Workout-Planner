@@ -1,352 +1,260 @@
-const USERS_KEY = "users";
-const CURRENT_USER_KEY = "currentUser";
+const EXERCISES = [
+  // Compound – barbell/dumbbell/bodyweight alternatives
+  {id:'squat', name:'Back Squat', muscle:'legs', type:'compound', equip:['barbell','rack']},
+  {id:'fsquat', name:'Front Squat', muscle:'legs', type:'compound', equip:['barbell','rack']},
+  {id:'goblet', name:'Goblet Squat', muscle:'legs', type:'compound', equip:['dumbbell','kettlebell']},
+  {id:'legpress', name:'Leg Press', muscle:'legs', type:'compound', equip:['machine']},
+  {id:'rdl', name:'Romanian Deadlift', muscle:'posterior', type:'compound', equip:['barbell','dumbbell']},
+  {id:'dl', name:'Deadlift', muscle:'posterior', type:'compound', equip:['barbell']},
+  {id:'hipthrust', name:'Hip Thrust', muscle:'glutes', type:'compound', equip:['barbell','bench']},
+  {id:'bench', name:'Barbell Bench Press', muscle:'chest', type:'compound', equip:['barbell','bench']},
+  {id:'dbbench', name:'DB Bench Press', muscle:'chest', type:'compound', equip:['dumbbell','bench']},
+  {id:'pushup', name:'Push-up', muscle:'chest', type:'compound', equip:['bodyweight']},
+  {id:'ohp', name:'Overhead Press', muscle:'shoulders', type:'compound', equip:['barbell']},
+  {id:'dbohp', name:'DB Shoulder Press', muscle:'shoulders', type:'compound', equip:['dumbbell']},
+  {id:'row', name:'Barbell Row', muscle:'back', type:'compound', equip:['barbell']},
+  {id:'dbrow', name:'DB Row', muscle:'back', type:'compound', equip:['dumbbell','bench']},
+  {id:'latpulldown', name:'Lat Pulldown', muscle:'back', type:'compound', equip:['machine','cable']},
+  {id:'pulldown', name:'Assisted Pull-up / Pull-down', muscle:'back', type:'compound', equip:['machine']},
+  {id:'pullup', name:'Pull-up', muscle:'back', type:'compound', equip:['bodyweight','bar']},
+  // Accessories
+  {id:'curl', name:'Bicep Curl', muscle:'biceps', type:'accessory', equip:['dumbbell','barbell','cable']},
+  {id:'tric', name:'Triceps Pushdown', muscle:'triceps', type:'accessory', equip:['cable']},
+  {id:'skull', name:'Skullcrusher', muscle:'triceps', type:'accessory', equip:['barbell','dumbbell','bench']},
+  {id:'latraise', name:'Lateral Raise', muscle:'shoulders', type:'accessory', equip:['dumbbell','cable']},
+  {id:'fly', name:'Chest Fly', muscle:'chest', type:'accessory', equip:['dumbbell','cable','machine']},
+  {id:'legcurl', name:'Leg Curl', muscle:'posterior', type:'accessory', equip:['machine']},
+  {id:'legext', name:'Leg Extension', muscle:'quads', type:'accessory', equip:['machine']},
+  {id:'calf', name:'Calf Raise', muscle:'calves', type:'accessory', equip:['machine','smith','bodyweight']},
+  {id:'coreplank', name:'Plank', muscle:'core', type:'core', equip:['bodyweight']},
+  {id:'corecable', name:'Cable Crunch', muscle:'core', type:'core', equip:['cable']},
+  {id:'hanging', name:'Hanging Knee Raise', muscle:'core', type:'core', equip:['bar']},
+];
 
-//Storage
-const store = {
-  getUsers(){
-    return JSON.parse(localStorage.getItem(USERS_KEY) || "{}");
+// Equipment universe (for UI)
+const EQUIPMENT = [
+  'barbell','dumbbell','machine','cable','kettlebell','bench','rack','smith','bodyweight','bar'
+];
+
+// ------------------------------
+// 2) Simple parameter maps by level & goal
+// ------------------------------
+const LEVEL_PARAMS = {
+  beginner:    { setsMain:3,  setsAcc:2, repMain:[8,10], repAcc:[10,15], restMain:120, restAcc:60 },
+  intermediate:{ setsMain:4,  setsAcc:3, repMain:[6,8],  repAcc:[8,12],  restMain:150, restAcc:75 },
+  advanced:    { setsMain:5,  setsAcc:3, repMain:[4,6],  repAcc:[6,10],  restMain:180, restAcc:90 },
+};
+
+const GOAL_TWEAKS = {
+  strength:    { repMainDelta:-2, repAccDelta:-2, restBoost:1.2 },
+  hypertrophy: { repMainDelta:+2, repAccDelta:+2, restBoost:0.9 },
+  endurance:   { repMainDelta:+4, repAccDelta:+4, restBoost:0.8 },
+  recomp:      { repMainDelta:+0, repAccDelta:+0, restBoost:1.0 },
+};
+
+// ------------------------------
+// 3) Progression engine: adjust volume +/- based on adherence & RPE
+// ------------------------------
+function progressionAdjust(levelParams, adherence, rpe){
+  const p = {...levelParams};
+  if(adherence==='yes' && rpe<=7){ // nudge up
+    p.setsMain += 1; // add a set to mains
+  }
+  if(adherence==='no' || rpe>=9){ // deload light
+    p.setsMain = Math.max(2, p.setsMain-1);
+    p.setsAcc = Math.max(1, p.setsAcc-1);
+  }
+  return p;
+}
+
+// ------------------------------
+// 4) Utility helpers
+// ------------------------------
+const rng = (min,max)=> Math.floor(Math.random()*(max-min+1))+min;
+const pick = (arr)=> arr[Math.floor(Math.random()*arr.length)];
+function withinEquip(ex, avail){
+  return ex.equip.some(e => avail.has(e));
+}
+function repRange(base, delta){
+  return [Math.max(3, base[0]+delta), Math.max(4, base[1]+delta)];
+}
+function fmtRange([a,b]){return `${a}–${b}`}
+
+// group exercises by muscle for quick lookup (kept in case you expand)
+const byMuscle = EXERCISES.reduce((m,e)=>{(m[e.muscle]??=[]).push(e); return m;},{});
+
+// ------------------------------
+// 5) Split templates by days
+// ------------------------------
+const SPLITS = {
+  2: [ ['full'], ['full'] ],
+  3: [ ['push'], ['pull'], ['legs'] ],
+  4: [ ['upper'], ['lower'], ['upper'], ['lower'] ],
+  5: [ ['upper'], ['lower'], ['push'], ['pull'], ['full'] ],
+  6: [ ['push'], ['pull'], ['legs'], ['upper'], ['lower'], ['full'] ],
+};
+
+// Exercise blueprints per day focus
+const BLUEPRINT = {
+  full: {
+    main:  ['squat/goblet/legpress', 'bench/dbbench/pushup', 'row/dbrow/latpulldown/pullup'],
+    acc:   ['rdl/hipthrust', 'latraise/fly', 'curl/tric', 'coreplank/corecable/hanging']
   },
-  setUsers(u){
-    localStorage.setItem(USERS_KEY, JSON.stringify(u));
+  upper: {
+    main:  ['bench/dbbench/pushup', 'row/latpulldown/pullup', 'ohp/dbohp'],
+    acc:   ['latraise/fly', 'curl', 'tric', 'coreplank/corecable/hanging']
   },
-  getCurrentUser(){
-    const r = localStorage.getItem(CURRENT_USER_KEY); 
-    return r? JSON.parse(r): null;
+  lower: {
+    main:  ['squat/goblet/legpress', 'rdl/dl/hipthrust'],
+    acc:   ['legext', 'legcurl', 'calf', 'coreplank']
   },
-  setCurrentUser(u){
-    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(u));
+  push: {
+    main:  ['bench/dbbench/pushup', 'ohp/dbohp'],
+    acc:   ['fly', 'tric', 'latraise', 'coreplank']
   },
-  clearCurrentUser(){
-    localStorage.removeItem(CURRENT_USER_KEY);
+  pull: {
+    main:  ['row/dbrow/latpulldown/pullup', 'rdl/dl'],
+    acc:   ['curl', 'legcurl', 'coreplank/corecable/hanging']
+  },
+  legs: {
+    main:  ['squat/goblet/legpress', 'rdl/hipthrust/dl'],
+    acc:   ['legext', 'legcurl', 'calf', 'coreplank']
   }
 };
 
-//Helpers
-function mount(html){
-    document.getElementById("app").innerHTML = html;
-}
-function isAuthed(){
-    return !!store.getCurrentUser();
-}
-function guard(){
-    if(!isAuthed()){
-        location.hash="#/login";
-        return false;
-    }
-    return true;
-}
-function $(sel, root=document){
-    return root.querySelector(sel);
-}
-function on(el, evt, cb){
-    el.addEventListener(evt, cb);
+// resolve a slot like 'bench/dbbench/pushup' to a concrete exercise that fits equipment
+function resolveSlot(slot, avail){
+  const options = slot.split('/').map(id=>EXERCISES.find(e=>e.id===id)).filter(Boolean);
+  const fit = options.filter(e=>withinEquip(e, avail));
+  return (fit.length? pick(fit) : pick(options));
 }
 
-//Email & Password Validation
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-function scorePassword(pw){
-  let score = 0;
-  if (pw.length >= 8) score++;
-  if (/[A-Z]/.test(pw)) score++;
-  if (/[a-z]/.test(pw) && /\d/.test(pw)) score++;
-  if (/[^A-Za-z0-9]/.test(pw)) score++;
-  return Math.min(score, 4);
-}
+// ------------------------------
+// 6) Core generator
+// ------------------------------
+function generatePlan({level='beginner', days=3, goal='recomp', equipment=[], adherence='yes', rpe=7, week=1}){
+  days = Math.min(6, Math.max(2, Number(days)||3));
+  const split = SPLITS[days] || SPLITS[3];
+  const base = LEVEL_PARAMS[level] || LEVEL_PARAMS.beginner;
+  const tweaked = {...base};
+  const g = GOAL_TWEAKS[goal] || GOAL_TWEAKS.recomp;
+  const repMain = repRange(base.repMain, g.repMainDelta);
+  const repAcc  = repRange(base.repAcc,  g.repAccDelta);
+  tweaked.restMain = Math.round(base.restMain * g.restBoost);
+  tweaked.restAcc  = Math.round(base.restAcc  * g.restBoost);
 
-function validateRegister({username, email, password}){
-  const errors = {};
-  if (!username || username.trim().length < 3){
-   errors.username = "Username must be at least 3 characters."; 
-  }
-  if (!emailRegex.test(email)){
-    errors.email = "Enter a valid email address.";
-  }
-  
-  const s = scorePassword(password);
-  if (s < 3){
-    errors.password = "Password must be 8+ chars with upper/lowercase, a number, and preferably a symbol.";
-  }
-  return { ok: Object.keys(errors).length === 0, errors, score: s };
-}
+  // progression
+  const prog = progressionAdjust({ ...tweaked }, adherence, rpe);
 
-function validateLogin({email, password}){
-  const errors = {};
-  if (!emailRegex.test(email)){
-    errors.email = "Invalid email.";
-  }
-  if (!password){
-    errors.password = "Password is required.";
-  }
-  return { ok: Object.keys(errors).length === 0, errors };
-}
+  const avail = new Set(equipment);
+  const daysOut = [];
 
-//Templates
-const Views = {
-  Login: () => `
-    <section class="card" aria-labelledby="login-title">
-      <h2 id="login-title"> Welcome back </h2>
-      <p> Please sign in to continue. </p>
-      
-      <form id="loginForm" class="form" novalidate>
-        <div>
-          <input class="input" type="email" id="loginEmail" placeholder="Email" required />
-          <div id="loginEmailErr" class="alert error"></div>
-        </div>
-        
-        <div>
-          <input class="input" type="password" id="loginPassword" placeholder="Password" required />
-          <div id="loginPasswordErr" class="alert error"></div>
-        </div>
-        
-        <button class="btn btn-primary" type="submit"> Login </button>
-      </form>
-      
-      <div class="row" style="margin-top:8px;">
-        <span> New here? </span>
-        <a class="link" href="#/register"> Create an account </a>
-      </div>
-      
-      <div id="loginMsg" class="alert"></div>
-    </section>
-  `,
-  Register: () => `
-    <section class="card" aria-labelledby="reg-title">
-      <h2 id="reg-title"> Create account </h2>
-      <p> It takes less than a minute. </p>
-      
-      <form id="regForm" class="form" novalidate>
-        <div>
-          <input class="input" id="regUsername" type="text" placeholder="Username" required />
-          <div id="regUsernameErr" class="alert error"></div>
-        </div>
-        
-        <div>
-          <input class="input" id="regEmail" type="email" placeholder="Email" required />
-          <div id="regEmailErr" class="alert error"></div>
-        </div>
-        
-        <div>
-          <input class="input" id="regPassword" type="password" placeholder="Password (8+ chars)" required aria-describedby="pwHelp" />
-          <div class="meter" id="pwMeter"><div class="meter-fill"></div></div>
-          <div id="pwHelp" class="helper"> Use upper & lower case, a number, and a symbol. </div>
-          <div id="regPasswordErr" class="alert error"></div>
-        </div>
-        
-        <button class="btn btn-primary" type="submit"> Register </button>
-      </form>
-      
-      <div class="row" style="margin-top:8px;">
-        <span> Already have an account? </span>
-        <a class="link" href="#/login"> Sign in </a>
-      </div>
-      
-      <div id="regMsg" class="alert"></div>
-    </section>
-  `,
-  Home: (user, tab="overview") => `
-    <div class="grid cols-3" style="margin-bottom:16px;">
-      <div class="card">
-        <h3> Welcome, ${user.username} 👋</h3>
-        <p> Here’s a quick snapshot of your app. </p>
-      </div>
-      
-      <div class="card">
-        <h3> Status </h3>
-        <p><strong> Online </strong> • Session active </p>
-      </div>
-      
-      <div class="card">
-        <h3> Tips </h3>
-        <p> Use the sidebar to navigate between sections. </p>
-      </div>
-    </div>
+  split.forEach((focusArr, i)=>{
+    const focus = focusArr[0];
+    const bp = BLUEPRINT[focus];
+    const mains = bp.main.map(s=>resolveSlot(s, avail));
+    const accs  = bp.acc
+      .slice()
+      .sort(()=>Math.random()-0.5)
+      .slice(0, 3)
+      .map(s=>resolveSlot(s, avail));
 
-    <div class="grid cols-2">
-      <div class="card">
-        <h3> Quick Add </h3>
-        <p class="helper"> Demo form with validation. </p>
-        
-        <form id="quickForm" class="form" novalidate>
-          <input id="quickTitle" class="input" placeholder="Title" required />
-          
-          <select id="quickPriority" class="select" required>
-            <option value=""> Priority… </option>
-            <option> Low </option>
-            <option> Medium </option>
-            <option> High </option>
-          </select>
-          
-          <textarea id="quickNotes" class="textarea" rows="4" placeholder="Notes (optional)"></textarea>
-          <button class="btn btn-primary" type="submit"> Add </button>
-          <div id="quickErr" class="alert error"></div>
-          <div id="quickOk" class="alert success"></div>
-        </form>
-      </div>
+    const dayName = `${['Mon','Tue','Wed','Thu','Fri','Sat'][i%6] || 'Day'} – ${focus.toUpperCase()}`;
 
-      <div class="card">
-        <h3> ${tab === "stats" ? "Statistics" : tab === "settings" ? "Settings" : "Activity"} </h3>
-        <p class="helper"> ${tab === "stats" ? "Placeholder stats card." : tab === "settings" ? "Placeholder settings card." : "Recent actions appear here."} </p>
-        <ul id="activityList"></ul>
-      </div>
-    </div>
-  `
-};
-
-//Router
-const routes = {
-  "#/login": renderLogin,
-  "#/register": renderRegister,
-  "#/home": renderHome
-};
-
-function render(){
-  const hash = location.hash || "#/login";
-  (routes[hash.split("?")[0]] || routes["#/login"])();
-  updateChrome();
-}
-
-//Renderers
-function renderLogin(){
-  document.body.classList.add("auth");      // compact centered mode
-  mount(Views.Login());
-  $("#sidebar")?.classList.remove("open");
-
-  const form = $("#loginForm");
-  const msg = $("#loginMsg");
-  on(form, "submit", (e)=>{
-    e.preventDefault();
-    const payload = {
-      email: $("#loginEmail").value.trim().toLowerCase(),
-      password: $("#loginPassword").value
-    };
-    
-    const v = validateLogin(payload);
-    $("#loginEmailErr").textContent = v.errors.email || "";
-    $("#loginPasswordErr").textContent = v.errors.password || "";
-    if(!v.ok) return;
-
-    const users = store.getUsers();
-    const user = users[payload.email];
-    if (user && user.password === payload.password){
-      store.setCurrentUser({username:user.username, email: payload.email});
-      msg.className = "alert success"; 
-      msg.textContent = "Login successful. Redirecting…";
-      setTimeout(()=> location.hash="#/home", 200);
-    } else {
-      msg.className = "alert error"; 
-      msg.textContent = "Invalid email or password.";
-    }
-  });
-}
-
-function renderRegister(){
-  document.body.classList.add("auth");      // compact centered mode
-  mount(Views.Register());
-  $("#sidebar")?.classList.remove("open");
-
-  const form = $("#regForm");
-  const msg = $("#regMsg");
-  const pw = $("#regPassword");
-  const meter = $("#pwMeter");
-  const meterFill = meter.querySelector(".meter-fill");
-
-  on(pw,"input", ()=>{
-    const s = scorePassword(pw.value);
-    meter.className = `meter strength-${Math.max(1, s)}`;
-    meterFill.style.width = `${(s / 4) * 100}%`;
+    daysOut.push({
+      name: dayName,
+      focus,
+      main: mains.map(x=>({ id:x.id, name:x.name, sets:prog.setsMain, reps:repMain, rest:prog.restMain })),
+      accessories: accs.map(x=>({ id:x.id, name:x.name, sets:prog.setsAcc, reps:repAcc, rest:prog.restAcc })),
+      note: week%4===0? 'Deload week: leave 3–4 reps in reserve (RIR) and reduce weight ~10–15%.' : 'Aim to leave 1–2 reps in reserve (RIR). Increase weight next week if all top sets feel ≤7 RPE.'
+    });
   });
 
-  on(form, "submit", (e)=>{
-    e.preventDefault();
-    const payload = {
-      username: $("#regUsername").value,
-      email: $("#regEmail").value.trim().toLowerCase(),
-      password: pw.value
-    };
-    
-    const v = validateRegister(payload);
-    $("#regUsernameErr").textContent = v.errors.username || "";
-    $("#regEmailErr").textContent = v.errors.email || "";
-    $("#regPasswordErr").textContent = v.errors.password || "";
-    if(!v.ok) return;
-
-    const users = store.getUsers();
-    if (users[payload.email]){
-      msg.className = "alert error";
-      msg.textContent = "User already exists.";
-      return;
-    }
-    users[payload.email] = { username: payload.username, password: payload.password };
-    store.setUsers(users);
-    msg.className = "alert success";
-    msg.textContent = "Registration successful. You can log in now.";
-    setTimeout(()=> location.hash="#/login", 600);
-  });
+  return { meta:{ level, days, goal, week, adherence, rpe }, plan: daysOut };
 }
 
-function renderHome(){
-  if(!guard()) return;
-  document.body.classList.remove("auth");   // back to dashboard layout
+// ------------------------------
+// 7) Minimal persistence to show progress working
+// ------------------------------
+const STORAGE_KEY = 'simple_ai_plan_v1';
+function saveState(s){ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+function loadState(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }catch{ return {}; } }
 
-  const params = new URLSearchParams(location.hash.split("?")[1] || "");
-  const tab = params.get("tab") || "overview";
-  const user = store.getCurrentUser();
-  mount(Views.Home(user, tab));
-
-  // Demo quick-form validation
-  const qForm = $("#quickForm");
-  const qErr = $("#quickErr");
-  const qOk = $("#quickOk");
-  on(qForm,"submit",(e)=>{
-    e.preventDefault();
-    
-    qErr.textContent= ""; 
-    qOk.textContent= "";
-    
-    const title = $("#quickTitle").value.trim();
-    const prio = $("#quickPriority").value;
-    if (title.length < 3){
-        qErr.textContent= "Title must be at least 3 characters.";
-        return;
-    }
-    if (!prio){
-        qErr.textContent= "Please choose a priority.";
-        return;
-    }
-    
-    qOk.textContent= "Saved (demo).";
-    qForm.reset();
-  });
-}
-
-//Chrome (logout + sidebar)
-function updateChrome(){
-  const authed = isAuthed();
-  const logoutBtn = $("#logoutBtn");
-  if (authed){
-    logoutBtn.classList.remove("hidden");
-  } else {
-    logoutBtn.classList.add("hidden");
-  }
-
-  $("#shell").style.display = authed ? "grid" : "block";
-  $("#sidebar").style.display = authed ? "block" : "none";
-}
-
-//Sidebar toggle for mobile
-on($("#menuToggle"), "click", ()=>{
-  const sb = $("#sidebar");
-  const open = sb.classList.toggle("open");
-  $("#menuToggle").setAttribute("aria-expanded", String(open));
+// ------------------------------
+// 8) UI wiring (demo only)
+// ------------------------------
+const equipRow = document.getElementById('equipRow');
+EQUIPMENT.forEach(e=>{
+  const label = document.createElement('label'); label.className='chip';
+  label.innerHTML = `<input type="checkbox" value="${e}"> ${e}`;
+  equipRow.appendChild(label);
 });
 
-//Global logout
-on(document, "click", (e)=>{
-  if (e.target && e.target.id === "logoutBtn"){
-    store.clearCurrentUser();
-    location.hash = "#/login";
-  }
-});
+function getSelectedEquip(){
+  return Array.from(equipRow.querySelectorAll('input:checked')).map(x=>x.value);
+}
 
-window.addEventListener("hashchange", render);
-window.addEventListener("load", render);
+function render(out){
+  const el = document.getElementById('out');
+  el.innerHTML = '';
+  out.plan.forEach(day=>{
+    const wrap = document.createElement('div'); wrap.className='day';
+    const h = document.createElement('h4'); h.textContent = day.name; wrap.appendChild(h);
+
+    const exs = document.createElement('div'); exs.className = 'exs'; wrap.appendChild(exs);
+    const mk = (e,isMain)=>{
+      const d = document.createElement('div'); d.className='ex';
+      const sets = `${e.sets} x ${fmtRange(e.reps)} reps`;
+      d.innerHTML = `<strong>${e.name}</strong><br><small>${isMain?'Main':'Accessory'} • ${sets} • Rest ${e.rest}s</small>`;
+      return d;
+    };
+    day.main.forEach(m=>exs.appendChild(mk(m,true)));
+    day.accessories.forEach(a=>exs.appendChild(mk(a,false)));
+
+    const p = document.createElement('p'); p.className='note'; p.textContent = day.note; wrap.appendChild(p);
+    el.appendChild(wrap);
+  });
+}
+
+function currentWeek(){
+  const s = loadState();
+  return Number(s.week)||1;
+}
+
+function setWeekBadge(w){
+  document.getElementById('weekBadge').textContent = `Week ${w}`;
+}
+
+// initial state
+setWeekBadge(currentWeek());
+
+// Generate click
+const genBtn = document.getElementById('gen');
+
+function handleGenerate(){
+  const profile = {
+    level: document.getElementById('level').value,
+    days: document.getElementById('days').value,
+    goal: document.getElementById('goal').value,
+    equipment: getSelectedEquip(),
+    adherence: document.getElementById('adherence').value,
+    rpe: Number(document.getElementById('rpe').value)||7,
+    week: currentWeek()
+  };
+  const plan = generatePlan(profile);
+  render(plan);
+  // Save next-week progression hint
+  const nextWeek = Math.min(12, profile.week + 1);
+  saveState({ week: nextWeek });
+  setWeekBadge(profile.week);
+}
+
+genBtn.addEventListener('click', handleGenerate);
+
+// Auto-generate on first load
+handleGenerate();
+
+// ------------------------------
+// 9) Export generator for your app (global)
+// ------------------------------
+window.SimpleAIWorkout = { generatePlan };
