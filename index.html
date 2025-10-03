@@ -1,42 +1,71 @@
-<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title> NeuroFit </title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="app.css">
-    </head>
+<title>AI Workout Plan – Simple Working Model</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>Simple AI Workout Plan (Working Demo)</h1>
+<span class="badge" id="weekBadge">Week 1</span>
+</header>
 
-    <body>
-        <nav class="topbar">
-            <button id="menuToggle" class="icon-btn" aria-label="Open Menu" aria-expanded="false"> ☰ </button>
-            <div class="brand"> My Web App </div>
-            <div class="spacer"></div>
-            <button id="logoutBtn" class="btn btn-outline hidden"> Logout </button>
-        </nav>
 
-        <div id="shell" class="shell">
-            <aside id="sidebar" class="sidebar">
-                <div class="sidebar-section">
-                    <div class="sidebar-title"> Main </div>
-                    <a class="sidebar-link" href="#/home"> Dashboard </a>
-                    <a class="sidebar-link" href="#/home?tab=stats"> Stats </a>
-                    <a class="sidebar-link" href="#/home?tab=settings"> Settings </a>
-                </div>
-                <div class="sidebar-section">
-                    <div class="sidebar-title"> Resources </div>
-                    <a class="sidebar-link" href="#"> Docs </a>
-                    <a class="sidebar-link" href="#"> Support </a>
-                </div>
-            </aside>
+<div class="card controls">
+<div class="field">
+<h3>Fitness level</h3>
+<select id="level">
+<option value="beginner">Beginner</option>
+<option value="intermediate">Intermediate</option>
+<option value="advanced">Advanced</option>
+</select>
+</div>
+<div class="field">
+<h3>Days per week</h3>
+<input id="days" type="number" min="2" max="6" value="4" />
+</div>
+<div class="field">
+<h3>Goal</h3>
+<select id="goal">
+<option value="recomp">Recomp / General</option>
+<option value="strength">Strength</option>
+<option value="hypertrophy">Hypertrophy</option>
+<option value="endurance">Endurance</option>
+</select>
+</div>
+<div class="field">
+<h3>Available equipment</h3>
+<div class="row" id="equipRow"></div>
+</div>
+<div class="field">
+<h3>Progress inputs</h3>
+<div class="grid-2">
+<label class="stack"> RPE last week (1–10)
+<input id="rpe" type="number" min="1" max="10" value="7" />
+</label>
+<label class="stack"> Completed ≥90% of sets last week?
+<select id="adherence">
+<option value="yes">Yes</option>
+<option value="no">No</option>
+</select>
+</label>
+</div>
+<p class="note">These two values drive auto-progression: if effort felt easy (RPE ≤7) and adherence was good, volume nudges up; if RPE ≥9 or adherence was poor, it eases off.</p>
+</div>
+<div class="field">
+<button id="gen">Generate Plan</button>
+</div>
+</div>
 
-            <main id="app" class="content"></main>
-        </div>
 
-        <footer class="footer">
-            <small> Demo SPA - Vanilla JS - localStorage </small>
-        </footer>
+<div class="out" id="out"></div>
 
-        <script src="app.js"></script>
-    </body>
+
+<div class="footer">
+<p class="muted-box">This is a simple, deterministic "AI" engine using rules + lightweight stochastic choices. It respects level, equipment, and progress to produce a safe, progressive plan. You can wire the generator to your existing user profile and localStorage.</p>
+</div>
+</div>
+
+
+<script src="app.js"></script>
+</body>
 </html>
