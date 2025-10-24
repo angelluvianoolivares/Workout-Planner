@@ -1,13 +1,4 @@
-/* =========================================================
-   NeuroFit — Single-file Frontend (Supabase Edition)
-   Requires:
-   - index.html includes <script type="module"> window.supabase = createClient(...) </script>
-   - Supabase backend from backend.sql applied
-   ========================================================= */
 
-/* =========================
-   PLAN GENERATOR ENGINE
-   ========================= */
 const EXERCISES = [
   {id:'squat', name:'Back Squat', muscle:'legs', type:'compound', equip:['barbell','rack']},
   {id:'fsquat', name:'Front Squat', muscle:'legs', type:'compound', equip:['barbell','rack']},
