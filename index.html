@@ -1,11 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title> NeuroFit </title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="app.css" />
-  </head>
+ <head>
+  <meta charset="UTF-8" />
+  <title>NeuroFit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="app.css" />
+
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+    window.supabase = createClient(
+      'https://pepsyzfjjifnwjqvzjqa.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlcHN5emZqamlmbndqcXZ6anFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEyNjM3MTQsImV4cCI6MjA3NjgzOTcxNH0.P9PNysBKbOzczy7BYTVtg5fLapQ1sp_QeUcrIf_Rp6g'
+    );
+  </script>
+</head>
+
   
   <body>
     <nav class="topbar">
