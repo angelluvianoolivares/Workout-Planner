@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Feed - NeuroFit</title>
+    <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="topbar">
+        <button id="menuToggle" class="icon-btn" aria-label="Open Menu"> ☰ </button>
+        <div class="brand"> NeuroFit - Social </div>
+        <div class="spacer"></div>
+        <a href="index.html#/home" class="btn btn-outline">← Back to Dashboard</a>
+        <button id="logoutBtn" class="btn btn-outline"> Logout </button>
+    </nav>
+
+    <div class="shell">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title"> Main </div>
+                <a class="sidebar-link" href="index.html#/home"> Dashboard </a>
+                <a class="sidebar-link" href="index.html#/progress"> Progress </a>
+                <a class="sidebar-link active" href="social.html"> Social Feed </a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title"> Workouts </div>
+                <a class="sidebar-link" href="index.html#/workouts/log"> Log Workout </a>
+                <a class="sidebar-link" href="index.html#/workouts/diagram"> Body Diagram </a>
+                <a class="sidebar-link" href="index.html#/workouts/history"> History </a>
+                <a class="sidebar-link" href="index.html#/generatePlan"> Generate Workout Plan </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content">
+            <!-- Create Post Section -->
+            <section class="card">
+                <h2>Share Your Progress</h2>
+                <p class="helper">Post your workout achievements and inspire the community!</p>
+
+                <form id="postForm" class="form">
+                    <textarea id="postText" class="textarea" placeholder="What did you accomplish today?" rows="4"></textarea>
+                    
+                    <div id="quickShareSection" style="margin: 12px 0; display: none;">
+                        <div class="card" style="background: rgba(124, 58, 237, 0.08); padding: 12px;">
+                            <p style="margin: 0 0 8px; font-size: 0.9rem; color: var(--muted);">
+                                Your latest workout:
+                            </p>
+                            <div id="latestWorkout"></div>
+                            <button type="button" id="useLatestBtn" class="btn btn-outline" style="margin-top: 8px;">
+                                📊 Use This Workout
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <button type="submit" class="btn btn-primary">📤 Post Update</button>
+                    </div>
+                </form>
+                <div id="postMessage" class="alert"></div>
+            </section>
+
+            <!-- Filter Bar -->
+            <section class="card" style="margin-top: 20px;">
+                <div class="row">
+                    <h3 style="margin: 0;">Community Feed</h3>
+                    <select id="feedFilter" class="select" style="width: auto;">
+                        <option value="all">All Posts</option>
+                        <option value="mine">My Posts Only</option>
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Social Feed -->
+            <div id="feedContainer"></div>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <small>NeuroFit Social Feed • Stay Connected</small>
+    </footer>
+
+    <script src="social.js"></script>
+</body>
+</html>
