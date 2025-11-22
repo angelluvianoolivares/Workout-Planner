@@ -1519,84 +1519,164 @@ class BodyDiagramScreen extends StatefulWidget {
 
 class Exercise {
   final String name;
+  final String img;
   final String videoURL;
 
-  Exercise(this.name, this.videoURL);
+  Exercise(this.name, this.img, this.videoURL);
 }
 
-class _BodyDiagramScreenState extends State<BodyDiagramScreen> {
-  bool _showingFront = true;
-  String? _selectedMuscle;
-  String? _hoveredMuscle;
+final Map<String, List<Exercise>> exercises = {
+  'chest': [
+    Exercise("Bench Press", "images/chest/Bench-Press.jpg", "https://www.youtube.com/watch?v=hWbUlkb5Ms4"),
+    Exercise("Close-Grip Bench Press", "images/chest/Close-Grip-Bench-Press.jpg", "https://www.youtube.com/watch?v/4yKLxOsrGfg"),
+    Exercise("Wide-Grip Bench Press", "images/chest/Wide-Grip-Bench-Press.jpg", "https://www.youtube.com/watch?v/NQNWLYJTtHA"),
+    Exercise("Incline Bench Press", "images/chest/Incline-Bench-Press.jpg", "https://www.youtube.com/watch?v/8fXfwG4ftaQ"),
+    Exercise("Decline Barbell Press", "images/chest/Decline-Barbell-Press.jpg", "https://www.youtube.com/watch?v=a-UFQE4oxWY"),
+    Exercise("Incline Dumbbell Bench Press", "images/chest/Incline-Dumbbell-Bench-Press.jpg", "https://www.youtube.com/watch?v/Gruq177Psnk"),
+    Exercise("Decline Dumbbell Bench Press", "images/chest/Decline-Dumbbell-Bench-Press.jpg", "https://www.youtube.com/watch?v/5JiZFjxyoJQ"),
+    Exercise("Dumbbell Chest Press", "images/chest/Dumbbell-Chest-Press.jpg", "https://www.youtube.com/watch?v=WbCEvFA0NJs"),
+    Exercise("Dumbbell Chest Flyes", "images/chest/Dumbbell-Chest-Flyes.jpg", "https://www.youtube.com/watch?v=rk8YayRoTRQ"),
+    Exercise("Machine Fly", "images/chest/Machine-Fly.jpg", "https://www.youtube.com/watch?v=xYExAgLt_4I"),
+    Exercise("Machine Chest Press", "images/chest/Machine-Chest-Press.jpg", "https://www.youtube.com/watch?v/Qu7-ceCvq7w"),
+    Exercise("Dumbbell Pullover", "images/chest/Dumbbell-Pullover.jpg", "https://www.youtube.com/watch?v/Datv2L6t3-4"),
+    Exercise("Cable Flyes", "images/chest/Cable-Flyes.jpg", "https://www.youtube.com/watch?v=y4RJDSOBEl8"),
+    Exercise("Incline Cable Flyes", "images/chest/Incline-Cable-Flyes.jpg", "https://www.youtube.com/watch?v=-Eq_GScOGOE"),
+    Exercise("Cable Crossover", "images/chest/Cable-Crossover.jpg", "https://www.youtube.com/watch?v=WIErn7-YvYQ"),
+  ],
 
-  final Map<String, List<Exercise>> _exercises = {
-    'chest': [
-      Exercise('Bench Press', 'https://www.youtube.com/watch?v=hWbUlkb5Ms4'),
-      Exercise('Incline Bench Press', 'https://www.youtube.com/watch?v=8fXfwG4ftaQ'),
-      Exercise('Decline Bench Press', 'https://www.youtube.com/watch?v=a-UFQE4oxWY'),
-      Exercise('Dumbbell Chest Press', 'https://www.youtube.com/watch?v=WbCEvFA0NJs'),
-      Exercise('Dumbbell Chest Flyes', 'https://www.youtube.com/watch?v=rk8YayRoTRQ'),
-      Exercise('Push-ups', 'https://www.youtube.com/watch?v=IODxDxX7oi4'),
-      Exercise('Cable Flyes', 'https://www.youtube.com/watch?v=y4RJDSOBEl8'),
-    ],
-    'biceps': [
-      Exercise('Barbell Curls', 'https://www.youtube.com/watch?v=54x2WF1_Suc'),
-      Exercise('Dumbbell Curls', 'https://www.youtube.com/watch?v=oLyP6sORFOc'),
-      Exercise('Hammer Curls', 'https://www.youtube.com/watch?v=vm0zV_WQerE'),
-      Exercise('Concentration Curls', 'https://www.youtube.com/watch?v=EjUnEEfTSEY'),
-      Exercise('Cable Curls', 'https://www.youtube.com/watch?v=CrbTqNOlFgE'),
-    ],
-    'abs': [
-      Exercise('Crunches', 'https://www.youtube.com/watch?v=eeJ_CYqSoT4'),
-      Exercise('Plank', 'https://www.youtube.com/watch?v=xe2MXatLTUw'),
-      Exercise('Russian Twists', 'https://www.youtube.com/watch?v=aRUMRbl7KS4'),
-      Exercise('Leg Raises', 'https://www.youtube.com/watch?v=FijNSgahpz0'),
-      Exercise('Mountain Climbers', 'https://www.youtube.com/watch?v=dqjZ6BGhY9s'),
-      Exercise('Bicycle Crunches', 'https://www.youtube.com/watch?v=CakPX7X-mSw'),
-    ],
-    'quads': [
-      Exercise('Back Squat', 'https://www.youtube.com/watch?v=S9iWwaqbD3Q'),
-      Exercise('Front Squat', 'https://www.youtube.com/watch?v=_qv0m3tPd3s'),
-      Exercise('Leg Press', 'https://www.youtube.com/watch?v=EotSw18oR9w'),
-      Exercise('Goblet Squat', 'https://www.youtube.com/watch?v=lRYBbchqxtI'),
-      Exercise('Bulgarian Split Squat', 'https://www.youtube.com/watch?v=or1frhkjBDc'),
-      Exercise('Leg Extensions', 'https://www.youtube.com/watch?v=iQ92TuvBqRo'),
-    ],
-    'traps': [
-      Exercise('Barbell Shrugs', 'https://www.youtube.com/watch?v=TUBuBI1U1wc'),
-      Exercise('Dumbbell Shrugs', 'https://www.youtube.com/watch?v=rFsSeClGnNA'),
-      Exercise('Upright Rows', 'https://www.youtube.com/watch?v=AWsGWt-VMl8'),
-      Exercise('Face Pulls', 'https://www.youtube.com/watch?v=qEyoBOpvqR4'),
-    ],
-    'delts': [
-      Exercise('Overhead Press', 'https://www.youtube.com/watch?v=4LBVP2Oe7fg'),
-      Exercise('Lateral Raises', 'https://www.youtube.com/watch?v=iK22GwXJji0'),
-      Exercise('Front Raises', 'https://www.youtube.com/watch?v=h9xfpTrAvkE'),
-      Exercise('Rear Delt Flyes', 'https://www.youtube.com/watch?v=LsT-bR_zxLo'),
-      Exercise('Arnold Press', 'https://www.youtube.com/watch?v=g4GUrEFoBxY'),
-    ],
-    'lats': [
-      Exercise('Pull-ups', 'https://www.youtube.com/watch?v=eGo4IYlbE5g'),
-      Exercise('Lat Pulldowns', 'https://www.youtube.com/watch?v=51ql2-2kLfA'),
-      Exercise('Barbell Rows', 'https://www.youtube.com/watch?v=phVtqawIgbk'),
-      Exercise('Dumbbell Rows', 'https://www.youtube.com/watch?v=s1H87k4tAaA'),
-      Exercise('Deadlifts', 'https://www.youtube.com/watch?v=xNwpvDuZJ3k'),
-      Exercise('T-Bar Rows', 'https://www.youtube.com/watch?v=MIulz5576AY'),
-    ],
-    'glutes': [
-      Exercise('Hip Thrusts', 'https://www.youtube.com/watch?v=pUdIL5x0fWg'),
-      Exercise('Glute Bridges', 'https://www.youtube.com/watch?v=DrZdxtfEgik'),
-      Exercise('Romanian Deadlifts', 'https://www.youtube.com/watch?v=g5u75sgpn04'),
-      Exercise('Bulgarian Split Squats', 'https://www.youtube.com/watch?v=or1frhkjBDc'),
-      Exercise('Lunges', 'https://www.youtube.com/watch?v=mJilHWIBWO8'),
-    ],
-    'hamstrings': [
-      Exercise('Romanian Deadlifts', 'https://www.youtube.com/watch?v=g5u75sgpn04'),
-      Exercise('Leg Curls', 'https://www.youtube.com/watch?v=YQfohLcJQlI'),
-      Exercise('Good Mornings', 'https://www.youtube.com/watch?v=7cpldMZjLOs'),
-      Exercise('Deadlifts', 'https://www.youtube.com/watch?v=xNwpvDuZJ3k'),
-    ],
-  };
+  'biceps': [
+    Exercise("Barbell Curls", "images/biceps/Barbell-Curls.jpg", "https://www.youtube.com/watch?v=54x2WF1_Suc"),
+    Exercise("Dumbbell Curls", "images/biceps/Dumbbell-Curls.jpg", "https://www.youtube.com/watch?v=oLyP6sORFOc"),
+    Exercise("Hammer Curls", "images/biceps/Hammer-Curls.jpg", "https://www.youtube.com/watch?v=vm0zV_WQerE"),
+    Exercise("Concentration Curls", "images/biceps/Concentration-Curls.jpg", "https://www.youtube.com/watch?v=EjUnEEfTSEY"),
+    Exercise("Cable Curls", "images/biceps/Cable-Curls.jpg", "https://www.youtube.com/watch?v=CrbTqNOlFgE"),
+    Exercise("Standing Dumbbell Curls", "images/biceps/Standing-Dumbbell-Curls.jpg", "https://www.youtube.com/watch?v=oLyP6sORFOc"),
+    Exercise("Alternating Dumbbell Curls", "images/biceps/Alternating-Dumbbell-Curls.jpg", "https://www.youtube.com/watch?v/FHY_2t7R714"),
+    Exercise("Incline Dumbbell Curls", "images/biceps/Incline-Dumbbell-Curls.jpg", "https://www.youtube.com/watch?v=fXFN8_1Bh6k"),
+    Exercise("Zottman Curls", "images/biceps/Zottman-Curls.jpg", "https://www.youtube.com/watch?v=5Go_uOTnFl0"),
+    Exercise("Cross-Body Hammer Curls", "images/biceps/Cross-Body-Hammer-Curls.jpg", "https://www.youtube.com/watch?v=qmQkt1Y-FX8"),
+    Exercise("Seated Alternating Dumbbell Curls", "images/biceps/Seated-Alternating-Dumbbell-Curls.jpg", "https://www.youtube.com/watch?v=16v_0ET03Oo"),
+    Exercise("EZ Bar Curls", "images/biceps/EZ-Bar-Curls.jpg", "https://www.youtube.com/watch?v/KFinlAT6aEo"),
+    Exercise("Reverse Curls", "images/biceps/Reverse-Curls.jpg", "https://www.youtube.com/watch?v=ZG2n5IcYIcY"),
+    Exercise("Wide-Grip Barbell Curls", "images/biceps/Wide-Grip-Barbell-Curls.jpg", "https://www.youtube.com/watch?v=pgeSaAKOXRs"),
+    Exercise("Close-Grip Barbell Curls", "images/biceps/Close-Grip-Barbell-Curls.jpg", "https://www.youtube.com/watch?v=a6ZJAmhCfjU"),
+  ],
+
+  'abs': [
+    Exercise("Crunches", "images/abs/Crunches.jpg", "https://www.youtube.com/watch?v=eeJ_CYqSoT4"),
+    Exercise("Plank", "images/abs/Plank.jpg", "https://www.youtube.com/watch?v=xe2MXatLTUw"),
+    Exercise("Russian Twists", "images/abs/Russian-Twists.jpg", "https://www.youtube.com/watch?v=aRUMRbl7KS4"),
+    Exercise("Leg Raises", "images/abs/Leg-Raises.jpg", "https://www.youtube.com/watch?v=FijNSgahpz0"),
+    Exercise("Mountain Climbers", "images/abs/Mountain-Climbers.jpg", "https://www.youtube.com/watch?v=dqjZ6BGhY9s"),
+    Exercise("Bicycle Crunches", "images/abs/Bicycle-Crunches.jpg", "https://www.youtube.com/watch?v=CakPX7X-mSw"),
+    Exercise("Weighted Crunches", "images/abs/Weighted-Crunches.jpg", "https://www.youtube.com/watch?v=Yg6GsyZoqK0"),
+    Exercise("Dumbbell Side Bend", "images/abs/Dumbbell-Side-Bend.jpg", "https://www.youtube.com/watch?v=kqr_IjiUuyY"),
+    Exercise("Weighted Sit-Ups", "images/abs/Weighted-Sit-Ups.jpg", "https://www.youtube.com/watch?v=MXOK5F6SKXQ"),
+    Exercise("Reverse Crunches", "images/abs/Reverse-Crunches.jpg", "https://www.youtube.com/watch?v=JkTk8irSNKE"),
+    Exercise("Flutter Kicks", "images/abs/Flutter-Kicks.jpg", "https://www.youtube.com/watch?v=tPmybsDX8ZY"),
+    Exercise("Toe Touches", "images/abs/Toe-Touches.jpg", "https://www.youtube.com/watch?v=20P7MU4Oaec"),
+    Exercise("V-Ups", "images/abs/V-Ups.jpg", "https://www.youtube.com/watch?v=Wks3wpNJqTg"),
+    Exercise("Side Plank", "images/abs/Side-Plank.jpg", "https://www.youtube.com/watch?v=BFOyHDlY2UE"),
+    Exercise("Plank with Shoulder Tap", "images/abs/Plank-with-Shoulder-Tap.jpg", "https://www.youtube.com/watch?v=gccQ1hMX46U"),
+  ],
+
+  'quads': [
+    Exercise("Back Squat", "images/quads/Back-Squat.jpg", "https://www.youtube.com/watch?v=S9iWwaqbD3Q"),
+    Exercise("Front Squat", "images/quads/Front-Squat.jpg", "https://www.youtube.com/watch?v=_qv0m3tPd3s"),
+    Exercise("Leg Press", "images/quads/Leg-Press.jpg", "https://www.youtube.com/watch?v=EotSw18oR9w"),
+    Exercise("Goblet Squat", "images/quads/Goblet-Squat.jpg", "https://www.youtube.com/watch?v=lRYBbchqxtI"),
+    Exercise("Bulgarian Split Squat", "images/quads/Bulgarian-Split-Squat.jpg", "https://www.youtube.com/watch?v=or1frhkjBDc"),
+    Exercise("Leg Extensions", "images/quads/Leg-Extensions.jpg", "https://www.youtube.com/watch?v=iQ92TuvBqRo"),
+    Exercise("Box Squat", "images/quads/Box-Squat.jpg", "https://www.youtube.com/watch?v=Go4tSkrFIL8"),
+    Exercise("Hack Squat", "images/quads/Hack-Squat.jpg", "https://www.youtube.com/watch?v=g9i05umL5vc"),
+    Exercise("Zercher Squat", "images/quads/Zercher-Squat.jpg", "https://www.youtube.com/watch?v=xtMpMCCzPrU"),
+    Exercise("Smith Machine Front Squat", "images/quads/Smith-Machine-Front-Squat.jpg", "https://www.youtube.com/watch?v=NO-6L6Blneg"),
+    Exercise("Sissy Squat", "images/quads/Sissy-Squat.jpg", "https://www.youtube.com/watch?v=f4ubaNbsq0Y"),
+    Exercise("Dumbbell Step-Ups", "images/quads/Dumbbell-Step-Ups.jpg", "https://www.youtube.com/watch?v/8q9LVgN2RD4"),
+    Exercise("Dumbbell Front Squat", "images/quads/Dumbbell-Front-Squat.jpg", "https://www.youtube.com/watch?v/0hw86JiWjCM"),
+    Exercise("Cable Pull Through", "images/quads/Cable-Pull-Through.jpg", "https://www.youtube.com/watch?v=SuTI-n84ezA"),
+    Exercise("Lunge", "images/quads/Lunge.jpg", "https://www.youtube.com/watch?v=mJilHWIBWO8"),
+  ],
+
+  'traps': [
+    Exercise("Barbell Shrugs", "images/traps/Barbell-Shrugs.jpg", "https://www.youtube.com/watch?v=TUBuBI1U1wc"),
+    Exercise("Dumbbell Shrugs", "images/traps/Dumbbell-Shrugs.jpg", "https://www.youtube.com/watch?v=rFsSeClGnNA"),
+    Exercise("Upright Rows", "images/traps/Upright-Rows.jpg", "https://www.youtube.com/watch?v=AWsGWt-VMl8"),
+    Exercise("Face Pulls", "images/traps/Face-Pulls.jpg", "https://www.youtube.com/watch?v=qEyoBOpvqR4"),
+    Exercise("Rack Pulls", "images/traps/Rack-Pulls.jpg", "https://www.youtube.com/watch?v=qFqbJqboCHU"),
+    Exercise("Reverse Cable Flyes", "images/traps/Reverse-Cable-Flyes.jpg", "https://www.youtube.com/watch?v=xswhV6zJaxY"),
+    Exercise("Cable Shrugs", "images/traps/Cable-Shrugs.jpg", "https://www.youtube.com/watch?v=m2ifHLnEIaA"),
+    Exercise("Smith Machine Shrugs", "images/traps/Smith-Machine-Shrugs.jpg", "https://www.youtube.com/watch?v=zdBh_Ul2psI"),
+    Exercise("Seated Cable Rows", "images/traps/Seated-Cable-Rows.jpg", "https://www.youtube.com/watch?v=qD1WZ5pSuvk"),
+    Exercise("Dumbbell Upright Rows", "images/traps/Dumbbell-Upright-Rows.jpg", "https://www.youtube.com/watch?v=fbc8FrvjFHk"),
+    Exercise("Dumbbell High Pulls", "images/traps/Dumbbell-High-Pulls.jpg", "https://www.youtube.com/watch?v=o0KJD3Xn3fc"),
+    Exercise("Farmer’s Walk", "images/traps/Farmers-Walk.jpg", "https://www.youtube.com/watch?v=HDoNIkik8r8"),
+    Exercise("Behind-the-Back Barbell Shrugs", "images/traps/Behind-the-Back-Barbell-Shrugs.jpg", "https://www.youtube.com/watch?v=xKS-kFgXNPU"),
+    Exercise("Snatch-Grip Deadlift", "images/traps/Snatch-Grip-Deadlift.jpg", "https://www.youtube.com/watch?v=E42_MZOKktU"),
+    Exercise("Incline Dumbbell Shrugs", "images/traps/Incline-Dumbbell-Shrugs.jpg", "https://www.youtube.com/watch?v=xEkIB8PeNv0"),
+  ],
+
+  'delts': [
+    Exercise("Overhead Press", "images/delts/Overhead-Press.jpg", "https://www.youtube.com/watch?v=4LBVP2Oe7fg"),
+    Exercise("Lateral Raises", "images/delts/Lateral-Raises.jpg", "https://www.youtube.com/watch?v=iK22GwXJji0"),
+    Exercise("Front Raises", "images/delts/Front-Raises.jpg", "https://www.youtube.com/watch?v=h9xfpTrAvkE"),
+    Exercise("Rear Delt Flyes", "images/delts/Rear-Delt-Flyes.jpg", "https://www.youtube.com/watch?v=LsT-bR_zxLo"),
+    Exercise("Arnold Press", "images/delts/Arnold-Press.jpg", "https://www.youtube.com/watch?v=g4GUrEFoBxY"),
+    Exercise("Overhead Barbell Press", "images/delts/Overhead-Barbell-Press.jpg", "https://www.youtube.com/watch?v=4LBVP2Oe7fg"),
+    Exercise("Behind-the-Neck Press", "images/delts/Behind-the-Neck-Press.jpg", "https://www.youtube.com/watch?v/2EZLxxKRHYY"),
+    Exercise("Incline Bench Rear Delt Raises", "images/delts/Incline-Bench-Rear-Delt-Raises.jpg", "https://www.youtube.com/watch?v=lRTT2YABNIM"),
+    Exercise("Dumbbell High Pulls", "images/delts/Dumbbell-High-Pulls.jpg", "https://www.youtube.com/watch?v=o0KJD3Xn3fc"),
+    Exercise("Single-Arm Dumbbell Press", "images/delts/Single-Arm-Dumbbell-Press.jpg", "https://www.youtube.com/watch?v=Cs2uNF-jW5s"),
+    Exercise("Cable Lateral Raises", "images/delts/Cable-Lateral-Raises.jpg", "https://www.youtube.com/watch?v=xrBcuPNTxLg"),
+    Exercise("Cable Front Raises", "images/delts/Cable-Front-Raises.jpg", "https://www.youtube.com/watch?v=NdQE5Fhfqn4"),
+    Exercise("Front Barbell Raise", "images/delts/Front-Barbell-Raise.jpg", "https://www.youtube.com/watch?v=MNho_Zw3mFc"),
+    Exercise("Upright Rows", "images/delts/Upright-Rows.jpg", "https://www.youtube.com/watch?v=um3VVzqunPU"),
+    Exercise("Seated Dumbbell Shoulder Press", "images/delts/Seated-Dumbbell-Shoulder-Press.jpg", "https://www.youtube.com/watch?v=k6tzKisR3NY"),
+  ],
+
+  'lats': [
+    Exercise("Pull-ups", "images/lats/Pull-ups.jpg", "https://www.youtube.com/watch?v=eGo4IYlbE5g"),
+    Exercise("Lat Pulldowns", "images/lats/Lat-Pulldowns.jpg", "https://www.youtube.com/watch?v=51ql2-2kLfA"),
+    Exercise("Barbell Rows", "images/lats/Barbell-Rows.jpg", "https://www.youtube.com/watch?v=phVtqawIgbk"),
+    Exercise("Dumbbell Rows", "images/lats/Dumbbell-Rows.jpg", "https://www.youtube.com/watch?v=s1H87k4tAaA"),
+    Exercise("Deadlifts", "images/lats/Deadlifts.jpg", "https://www.youtube.com/watch?v=xNwpvDuZJ3k"),
+    Exercise("T-Bar Rows", "images/lats/T-Bar-Rows.jpg", "https://www.youtube.com/watch?v=MIulz5576AY"),
+    Exercise("One-Arm Dumbbell Row", "images/lats/One-Arm-Dumbbell-Row.jpg", "https://www.youtube.com/watch?v=s1H87k4tAaA"),
+    Exercise("Incline Dumbbell Rows", "images/lats/Incline-Dumbbell-Rows.jpg", "https://www.youtube.com/watch?v=tZUYS7X50so"),
+    Exercise("Kroc Rows", "images/lats/Kroc-Rows.jpg", "https://www.youtube.com/watch?v=FY53-vxHU34"),
+    Exercise("Chest-Supported Dumbbell Rows", "images/lats/Chest-Supported-Dumbbell-Rows.jpg", "https://www.youtube.com/watch?v=woHK8Lws2xM"),
+    Exercise("Close-Grip Lat Pulldowns", "images/lats/Close-Grip-Lat-Pulldowns.jpg", "https://www.youtube.com/watch?v=E8cpBEoCrOs"),
+    Exercise("Straight-Arm Cable Pulldowns", "images/lats/Straight-Arm-Cable-Pulldowns.jpg", "https://www.youtube.com/watch?v=RK2PRy9VwPg"),
+    Exercise("Seated Cable Rows", "images/lats/Seated-Cable-Rows.jpg", "https://www.youtube.com/watch?v=qD1WZ5pSuvk"),
+    Exercise("Single-Arm Cable Rows", "images/lats/Single-Arm-Cable-Rows.jpg", "https://www.youtube.com/watch?v=yIvvQc2Z6uM"),
+    Exercise("Dumbbell Pullover", "images/lats/Dumbbell-Pullover.jpg", "https://www.youtube.com/watch?v=iy0VwFj"),
+  ],
+
+  'glutes': [
+    Exercise("Barbell Hip Thrusts", "images/glutes/Barbell-Hip-Thrusts.jpg", "https://www.youtube.com/watch?v=pUdIL5x0fWg"),
+    Exercise("Barbell Glute Bridges", "images/glutes/Barbell-Glute-Bridges.jpg", "https://www.youtube.com/embed/DrZdxtfEgik"),
+    Exercise("Sumo Deadlifts", "images/glutes/Sumo-Deadlifts.jpg", "https://www.youtube.com/watch?v=pfSMst14EFk"),
+    Exercise("Romanian Deadlifts", "images/glutes/Romanian-Deadlifts.jpg", "https://www.youtube.com/embed/g5u75sgpn04"),
+    Exercise("Good Mornings", "images/glutes/Good-Mornings.jpg", "https://www.youtube.com/embed/7cpldMZjLOs"),
+    Exercise("Dumbbell Step-Ups", "images/glutes/Dumbbell-Step-Ups.jpg", "https://www.youtube.com/embed/8q9LVgN2RD4"),
+    Exercise("Dumbbell Walking Lunges", "images/glutes/Dumbbell-Walking-Lunges.jpg", "https://www.youtube.com/embed/mJilHWIBWO8"),
+    Exercise("Goblet Squats", "images/glutes/Goblet-Squats.jpg", "https://www.youtube.com/embed/lRYBbchqxtI"),
+    Exercise("Dumbbell Romanian Deadlifts", "images/glutes/Dumbbell-Romanian-Deadlifts.jpg", "https://www.youtube.com/embed/oQwnGfZFfzw"),
+    Exercise("Kettlebell Swings", "images/glutes/Kettlebell-Swings.jpg", "https://www.youtube.com/embed/n1df4ASFeZU"),
+    Exercise("Cable Kickbacks", "images/glutes/Cable-Kickbacks.jpg", "https://www.youtube.com/watch?v=SqO-VUEak2M"),
+    Exercise("Cable Pull-Throughs", "images/glutes/Cable-Pull-Throughs.jpg", "https://www.youtube.com/embed/iQ92TuvBqRo"),
+    Exercise("Smith Machine Hip Thrusts", "images/glutes/Smith-Machine-Hip-Thrusts.jpg", "https://www.youtube.com/embed/i5Vpsf-c6r0"),
+    Exercise("Leg Press", "images/glutes/Leg-Press.jpg", "https://www.youtube.com/embed/EotSw18oR9w"),
+    Exercise("Abductor Machine", "images/glutes/Abductor-Machine.jpg", "https://www.youtube.com/embed/vNixlpsswr8"),
+  ],
+
+  'hamstrings': [
+    Exercise('Romanian Deadlifts', 'https://www.youtube.com/watch?v=g5u75sgpn04'),
+    Exercise('Leg Curls', 'https://www.youtube.com/watch?v=YQfohLcJQlI'),
+    Exercise('Good Mornings', 'https://www.youtube.com/watch?v=7cpldMZjLOs'),
+    Exercise('Deadlifts', 'https://www.youtube.com/watch?v=xNwpvDuZJ3k'),
+  ],
+};
 
   void _handleMuscleTap(String muscleId) {
     setState(() {
