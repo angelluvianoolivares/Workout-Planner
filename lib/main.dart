@@ -1671,21 +1671,7 @@ final Map<String, List<Exercise>> exercises = {
   ],
 
   'hams': [
-    Exercise('Romanian Deadlifts', 'images/hams/Romanian Deadlifts.jpg', 'https://www.youtube.com/embed/g5u75sgpn04'),
-    Exercise('Leg Curls', 'images/hams/Leg Curls.jpg', 'https://www.youtube.com/embed/YQfohLcJQlI'),
-    Exercise('Good Mornings', 'images/hams/Good Mornings.jpg', 'https://www.youtube.com/embed/7cpldMZjLOs'),
-    Exercise('Deadlifts', 'images/hams/Deadlifts.jpg', 'https://www.youtube.com/embed/xNwpvDuZJ3k'),
-    Exercise('Glute-Ham Raises', 'images/hams/Glute-Ham Raises.jpg', 'https://www.youtube.com/embed/1aZk5c5S0ss'),
-    Exercise('Single-Leg Deadlifts', 'images/hams/Single-Leg Deadlifts.jpg', 'https://www.youtube.com/embed/1YDD16Z-e6Y'),
-    Exercise('Seated Leg Curls', 'images/hams/Seated Leg Curls.jpg', 'https://www.youtube.com/embed/J3pFQuH-zxA'),
-    Exercise('Cable Pull-Throughs', 'images/hams/Cable Pull-Throughs.jpg', 'https://www.youtube.com/embed/iQ92TuvBqRo'),
-    Exercise('Barbell Hip Thrusts', 'images/hams/Barbell Hip Thrusts.jpg', 'https://www.youtube.com/embed/pUdIL5x0fWg'),
-    Exercise('Good Mornings Machine', 'images/hams/Good Mornings Machine.jpg', 'https://www.youtube.com/embed/3xX2L9PS0fo'),
-    Exercise('Dumbbell Step-Ups', 'images/hams/Dumbbell Step-Ups.jpg', 'https://www.youtube.com/embed/8q9LVgN2RD4'),
-    Exercise('Kettlebell Swings', 'images/hams/Kettlebell Swings.jpg', 'https://www.youtube.com/embed/n1df4ASFeZU'),
-    Exercise('Cable Kickbacks', 'images/hams/Cable Kickbacks.jpg', 'https://www.youtube.com/embed/SqO-VUEak2M'),
-    Exercise('Reverse Lunges', 'images/hams/Reverse Lunges.jpg', 'https://www.youtube.com/embed/8Zz1F1nz7h0'),
-    Exercise('Step-Up with Knee Drive', 'images/hams/Step-Up with Knee Drive.jpg', 'https://www.youtube.com/embed/1hsvLdpJJ4Y'),
+    Exercise('Romanian Deadlifts', 'image here', 'link here'),
   ],
 };
 
