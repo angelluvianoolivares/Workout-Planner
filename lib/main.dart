@@ -1671,7 +1671,7 @@ final Map<String, List<Exercise>> exercises = {
   ],
 
   'hams': [
-    Exercise('Romanian Deadlifts', 'image here', 'link here'),
+    
   ],
 };
 
