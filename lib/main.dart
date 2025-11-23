@@ -1606,7 +1606,7 @@ final Map<String, List<Exercise>> exercises = {
     Exercise('Rack Pulls', 'images/traps/Rack Pulls.jpg', 'https://www.youtube.com/embed/qFqbJqboCHU'),
     Exercise('Dumbbell Shrugs', 'images/traps/Dumbbell Shrugs.jpg', 'https://www.youtube.com/embed/rFsSeClGnNA'),
     Exercise('Incline Dumbbell Shrugs', 'images/traps/Incline Dumbbell Shrugs.jpg', 'https://www.youtube.com/embed/xEkIB8PeNv0'),
-    Exercise('Farmer’s Walk', 'images/traps/Farmer’s Walk.jpg', 'https://www.youtube.com/embed/HDoNIkik8r8'),
+    Exercise('Farmers Walk', 'images/traps/Farmers Walk.jpg', 'https://www.youtube.com/embed/HDoNIkik8r8'),
     Exercise('Dumbbell Upright Rows', 'images/traps/Dumbbell Upright Rows.jpg', 'https://www.youtube.com/embed/fbc8FrvjFHk'),
     Exercise('Dumbbell High Pulls', 'images/traps/Dumbbell High Pulls.jpg', 'https://www.youtube.com/embed/o0KJD3Xn3fc'),
     Exercise('Cable Shrugs', 'images/traps/Cable Shrugs.jpg', 'https://www.youtube.com/embed/m2ifHLnEIaA'),
