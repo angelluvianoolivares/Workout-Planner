@@ -1671,8 +1671,22 @@ final Map<String, List<Exercise>> exercises = {
   ],
 
   'hams': [
-    
-  ],
+    Exercise('Romanian Deadlift', 'images/hams/Romanian Deadlift.jpg', 'https://www.youtube.com/embed/g5u75sgpn04'),
+    Exercise('Lying Leg Curl', 'images/hams/Lying Leg Curl.jpg', 'https://www.youtube.com/embed/YQfohLcJQlI'),
+    Exercise('Seated Leg Curl', 'images/hams/Seated Leg Curl.jpg', 'https://www.youtube.com/embed/wFJjI9gBrFQ'),
+    Exercise('Good Mornings', 'images/hams/Good Mornings.jpg', 'https://www.youtube.com/embed/7cpldMZjLOs'),
+    Exercise('Deadlift', 'images/hams/Deadlift.jpg', 'https://www.youtube.com/embed/xNwpvDuZJ3k'),
+    Exercise('Single-Leg Romanian Deadlift', 'images/hams/Single-Leg Romanian Deadlift.jpg', 'https://www.youtube.com/embed/2shsC9MUkAM'),
+    Exercise('Nordic Hamstring Curl', 'images/hams/Nordic Hamstring Curl.jpg', 'https://www.youtube.com/embed/3pU0J9KkFv0'),
+    Exercise('Glute-Ham Raise (GHR)', 'images/hams/Glute-Ham Raise.jpg', 'https://www.youtube.com/embed/Ok9x6t5_Ki8'),
+    Exercise('Cable Pull-Through', 'images/hams/Cable Pull-Through.jpg', 'https://www.youtube.com/embed/5zAkYWoahgU'),
+    Exercise('Kettlebell Swing', 'images/hams/Kettlebell Swing.jpg', 'https://www.youtube.com/embed/y0xMCi8iS10'),
+    Exercise('Reverse Hyperextension', 'images/hams/Reverse Hyperextension.jpg', 'https://www.youtube.com/embed/0P4nUsG3Y6Q'),
+    Exercise('Swiss Ball Leg Curl', 'images/hams/Swiss Ball Leg Curl.jpg', 'https://www.youtube.com/embed/1i5dHjc4bGc'),
+    Exercise('Standing Leg Curl Machine', 'images/hams/Standing Leg Curl.jpg', 'https://www.youtube.com/embed/iLwiyq663iM'),
+    Exercise('Banded Hamstring Curl', 'images/hams/Banded Hamstring Curl.jpg', 'https://www.youtube.com/embed/C0DPdy98e4c'),
+    Exercise('Stiff-Leg Deadlift', 'images/hams/Stiff-Leg Deadlift.jpg', 'https://www.youtube.com/embed/nhoM4ZlX3ao'),
+    ],
 };
 
   void _handleMuscleTap(String muscleId) {
