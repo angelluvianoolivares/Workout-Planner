@@ -1,8 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
+//import 'package:url_launcher/url_launcher.dart';
 import 'generate_plan_logic.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -1541,70 +1542,71 @@ class _BodyDiagramScreenState extends State<BodyDiagramScreen> {
 
   final Map<String, List<Exercise>> _exercises = {
     'chest': [
-      Exercise('Bench Press', 'images/chest/Bench Press.jpg', 'https://www.youtube.com/watch?v=hWbUlkb5Ms4'),
-      Exercise('Incline Bench Press', 'images/chest/Incline Bench Press.jpg', 'https://www.youtube.com/watch?v=8fXfwG4ftaQ'),
-      Exercise('Decline Bench Press', 'images/chest/Decline Barbell Press.jpg', 'https://www.youtube.com/watch?v=a-UFQE4oxWY'),
-      Exercise('Dumbbell Chest Press', 'images/chest/Dumbbell Chest Press.jpg', 'https://www.youtube.com/watch?v=WbCEvFA0NJs'),
-      Exercise('Dumbbell Chest Flyes', 'images/chest/Dumbbell Chest Flyes.jpg', 'https://www.youtube.com/watch?v=rk8YayRoTRQ'),
+      Exercise('Bench Press', 'images/chest/Bench_Press.jpg', 'https://www.youtube.com/watch?v=hWbUlkb5Ms4'),
+      Exercise('Incline Bench Press', 'images/chest/Incline_Bench_Press.jpg', 'https://www.youtube.com/watch?v=8fXfwG4ftaQ'),
+      Exercise('Decline Bench Press', 'images/chest/Decline_Barbell_Press.jpg', 'https://www.youtube.com/watch?v=a-UFQE4oxWY'),
+      Exercise('Dumbbell Chest Press', 'images/chest/Dumbbell_Chest_Press.jpg', 'https://www.youtube.com/watch?v=WbCEvFA0NJs'),
+      Exercise('Dumbbell Chest Flyes', 'images/chest/Dumbbell_Chest_Flyes.jpg', 'https://www.youtube.com/watch?v=rk8YayRoTRQ'),
       Exercise('Push-ups', 'images/chest/placeholder.jpg', 'https://www.youtube.com/watch?v=IODxDxX7oi4'),
-      Exercise('Cable Flyes', 'images/chest/Cable Flyes.jpg', 'https://www.youtube.com/watch?v=y4RJDSOBEl8'),
+      Exercise('Cable Flyes', 'images/chest/Cable_Flyes.jpg', 'https://www.youtube.com/watch?v=y4RJDSOBEl8'),
+      Exercise('Cable Crossover', 'images/chest/Cable_Crossover.jpg', 'https://www.youtube.com/watch?WIErn7-YvYQ'),
     ],
     'biceps': [
-      Exercise('Barbell Curls', 'images/biceps/Barbell Curls.jpg', 'https://www.youtube.com/watch?v=54x2WF1_Suc'),
-      Exercise('Dumbbell Curls', 'images/biceps/Alternating Dumbbell Curls.jpg', 'https://www.youtube.com/watch?v=oLyP6sORFOc'),
-      Exercise('Hammer Curls', 'images/biceps/Hammer Curls.jpg', 'https://www.youtube.com/watch?v=vm0zV_WQerE'),
-      Exercise('Concentration Curls', 'images/biceps/Concentration Curls.jpg', 'https://www.youtube.com/watch?v=EjUnEEfTSEY'),
-      Exercise('Cable Curls', 'images/biceps/Cable Bicep Curls.jpg', 'https://www.youtube.com/watch?v=CrbTqNOlFgE'),
+      Exercise('Barbell Curls', 'images/biceps/Barbell_Curls.jpg', 'https://www.youtube.com/watch?v=54x2WF1_Suc'),
+      Exercise('Dumbbell Curls', 'images/biceps/Alternating_Dumbbell_Curls.jpg', 'https://www.youtube.com/watch?v=oLyP6sORFOc'),
+      Exercise('Hammer Curls', 'images/biceps/Hammer_Curls.jpg', 'https://www.youtube.com/watch?v=vm0zV_WQerE'),
+      Exercise('Concentration Curls', 'images/biceps/Concentration_Curls.jpg', 'https://www.youtube.com/watch?v=EjUnEEfTSEY'),
+      Exercise('Cable Curls', 'images/biceps/Cable_Bicep_Curls.jpg', 'https://www.youtube.com/watch?v=CrbTqNOlFgE'),
     ],
     'abs': [
       Exercise('Crunches', 'images/abs/Crunches.jpg', 'https://www.youtube.com/watch?v=eeJ_CYqSoT4'),
       Exercise('Plank', 'images/abs/Plank.jpg', 'https://www.youtube.com/watch?v=xe2MXatLTUw'),
-      Exercise('Russian Twists', 'images/abs/Russian Twists.jpg', 'https://www.youtube.com/watch?v=aRUMRbl7KS4'),
-      Exercise('Leg Raises', 'images/abs/Leg Raises.jpg', 'https://www.youtube.com/watch?v=FijNSgahpz0'),
-      Exercise('Mountain Climbers', 'images/abs/Mountain Climbers.jpg', 'https://www.youtube.com/watch?v=dqjZ6BGhY9s'),
-      Exercise('Bicycle Crunches', 'images/abs/Bicycle Crunches.jpg', 'https://www.youtube.com/watch?v=CakPX7X-mSw'),
+      Exercise('Russian Twists', 'images/abs/Russian_Twists.jpg', 'https://www.youtube.com/watch?v=aRUMRbl7KS4'),
+      Exercise('Leg Raises', 'images/abs/Leg_Raises.jpg', 'https://www.youtube.com/watch?v=FijNSgahpz0'),
+      Exercise('Mountain Climbers', 'images/abs/Mountain_Climbers.jpg', 'https://www.youtube.com/watch?v=dqjZ6BGhY9s'),
+      Exercise('Bicycle Crunches', 'images/abs/Bicycle_Crunches.jpg', 'https://www.youtube.com/watch?v=CakPX7X-mSw'),
     ],
     'quads': [
-      Exercise('Back Squat', 'images/quads/Barbell Back Squat.jpg', 'https://www.youtube.com/watch?v=S9iWwaqbD3Q'),
-      Exercise('Front Squat', 'images/quads/Front Squat.jpg', 'https://www.youtube.com/watch?v=_qv0m3tPd3s'),
-      Exercise('Leg Press', 'images/quads/Leg Press.jpg', 'https://www.youtube.com/watch?v=EotSw18oR9w'),
-      Exercise('Goblet Squat', 'images/quads/Placeholder.jpg', 'https://www.youtube.com/watch?v=lRYBbchqxtI'),
-      Exercise('Bulgarian Split Squat', 'images/quads/Bulgarian Split Squat.jpg', 'https://www.youtube.com/watch?v=or1frhkjBDc'),
-      Exercise('Leg Extensions', 'images/quads/Leg Extensions.jpg', 'https://www.youtube.com/watch?v=iQ92TuvBqRo'),
+      Exercise('Back Squat', 'images/quads/Barbell_Back_Squat.jpg', 'https://www.youtube.com/watch?v=S9iWwaqbD3Q'),
+      Exercise('Front Squat', 'images/quads/Front_Squat.jpg', 'https://www.youtube.com/watch?v=_qv0m3tPd3s'),
+      Exercise('Leg Press', 'images/quads/Leg_Press.jpg', 'https://www.youtube.com/watch?v=EotSw18oR9w'),
+      Exercise('Goblet Squat', 'images/quads/Dumbbell_Goblet_Squat.jpg', 'https://www.youtube.com/watch?v=lRYBbchqxtI'),
+      Exercise('Bulgarian Split Squat', 'images/quads/Bulgarian_Split_Squat.jpg', 'https://www.youtube.com/watch?v=or1frhkjBDc'),
+      Exercise('Leg Extensions', 'images/quads/Leg_Extensions.jpg', 'https://www.youtube.com/watch?v=iQ92TuvBqRo'),
     ],
     'traps': [
-      Exercise('Barbell Shrugs', 'images/traps/Barbell Shrugs.jpg', 'https://www.youtube.com/watch?v=TUBuBI1U1wc'),
-      Exercise('Dumbbell Shrugs', 'images/traps/Dumbbell Shrugs.jpg', 'https://www.youtube.com/watch?v=rFsSeClGnNA'),
-      Exercise('Upright Rows', 'images/traps/Upright Rows.jpg', 'https://www.youtube.com/watch?v=AWsGWt-VMl8'),
-      Exercise('Face Pulls', 'images/traps/Placeholder.jpg', 'https://www.youtube.com/watch?v=qEyoBOpvqR4'),
+      Exercise('Barbell Shrugs', 'images/traps/Barbell_Shrugs.jpg', 'https://www.youtube.com/watch?v=TUBuBI1U1wc'),
+      Exercise('Dumbbell Shrugs', 'images/traps/Dumbbell_Shrugs.jpg', 'https://www.youtube.com/watch?v=rFsSeClGnNA'),
+      Exercise('Upright Rows', 'images/traps/Upright_Rows.jpg', 'https://www.youtube.com/watch?v=AWsGWt-VMl8'),
+      Exercise('Face Pulls', 'images/traps/Cable_Face_Pulls.jpg', 'https://www.youtube.com/watch?v=qEyoBOpvqR4'),
     ],
     'delts': [
-      Exercise('Overhead Press', 'images/delts/Overhead Barbell Press.jpg', 'https://www.youtube.com/watch?v=4LBVP2Oe7fg'),
-      Exercise('Lateral Raises', 'images/delts/Lateral Dumbbell Raises.jpg', 'https://www.youtube.com/watch?v=iK22GwXJji0'),
-      Exercise('Front Raises', 'images/delts/Cable Front Raises.jpg', 'https://www.youtube.com/watch?v=h9xfpTrAvkE'),
-      Exercise('Rear Delt Flyes', 'images/delts/Rear Delt Flyes.jpg', 'https://www.youtube.com/watch?v=LsT-bR_zxLo'),
-      Exercise('Arnold Press', 'images/delts/Arnold Press.jpg', 'https://www.youtube.com/watch?v=g4GUrEFoBxY'),
+      Exercise('Overhead Press', 'images/delts/Overhead_Barbell_Press.jpg', 'https://www.youtube.com/watch?v=4LBVP2Oe7fg'),
+      Exercise('Lateral Raises', 'images/delts/Lateral_Dumbbell_Raises.jpg', 'https://www.youtube.com/watch?v=iK22GwXJji0'),
+      Exercise('Front Raises', 'images/delts/Cable_Front_Raises.jpg', 'https://www.youtube.com/watch?v=h9xfpTrAvkE'),
+      Exercise('Rear Delt Flyes', 'images/delts/Rear_Delt_Flyes.jpg', 'https://www.youtube.com/watch?v=LsT-bR_zxLo'),
+      Exercise('Arnold Press', 'images/delts/Arnold_Press.jpg', 'https://www.youtube.com/watch?v=g4GUrEFoBxY'),
     ],
     'lats': [
       Exercise('Pull-ups', 'images/lats/Placeholder.jpg', 'https://www.youtube.com/watch?v=eGo4IYlbE5g'),
-      Exercise('Lat Pulldowns', 'images/lats/Lat Pulldowns.jpg', 'https://www.youtube.com/watch?v=51ql2-2kLfA'),
-      Exercise('Barbell Rows', 'images/lats/Barbell Bent-Over Rows.jpg', 'https://www.youtube.com/watch?v=phVtqawIgbk'),
-      Exercise('Dumbbell Rows', 'images/lats/Incline Dumbbell Rows.jpg', 'https://www.youtube.com/watch?v=s1H87k4tAaA'),
+      Exercise('Lat Pulldowns', 'images/lats/Lat_Pulldowns.jpg', 'https://www.youtube.com/watch?v=51ql2-2kLfA'),
+      Exercise('Barbell Rows', 'images/lats/Barbell_Bent_Over_Rows.jpg', 'https://www.youtube.com/watch?v=phVtqawIgbk'),
+      Exercise('Dumbbell Rows', 'images/lats/Incline_Dumbbell_Rows.jpg', 'https://www.youtube.com/watch?v=s1H87k4tAaA'),
       Exercise('Deadlifts', 'images/lats/Deadlifts.jpg', 'https://www.youtube.com/watch?v=xNwpvDuZJ3k'),
-      Exercise('T-Bar Rows', 'images/lats/T-Bar Rows.jpg', 'https://www.youtube.com/watch?v=MIulz5576AY'),
+      Exercise('T-Bar Rows', 'images/lats/T_Bar_Rows.jpg', 'https://www.youtube.com/watch?v=MIulz5576AY'),
     ],
     'glutes': [
-      Exercise('Hip Thrusts', 'images/glutes/Barbell Hip Thrusts.jpg', 'https://www.youtube.com/watch?v=pUdIL5x0fWg'),
-      Exercise('Glute Bridges', 'images/glutes/Barbell Glute Bridges.jpg', 'https://www.youtube.com/watch?v=DrZdxtfEgik'),
-      Exercise('Romanian Deadlifts', 'images/glutes/Romanian Deadlifts.jpg', 'https://www.youtube.com/watch?v=g5u75sgpn04'),
-      Exercise('Bulgarian Split Squats', 'images/glutes/Placeholder.jpg', 'https://www.youtube.com/watch?v=or1frhkjBDc'),
+      Exercise('Hip Thrusts', 'images/glutes/Barbell_Hip_Thrusts.jpg', 'https://www.youtube.com/watch?v=pUdIL5x0fWg'),
+      Exercise('Glute Bridges', 'images/glutes/Barbell_Glute_Bridges.jpg', 'https://www.youtube.com/watch?v=DrZdxtfEgik'),
+      Exercise('Romanian Deadlifts', 'images/glutes/Romanian_Deadlifts.jpg', 'https://www.youtube.com/watch?v=g5u75sgpn04'),
+      Exercise('Bulgarian Split Squats', 'images/quads/Bulgarian_Split_Squat.jpg', 'https://www.youtube.com/watch?v=or1frhkjBDc'),
       Exercise('Lunges', 'images/glutes/Placeholder.jpg', 'https://www.youtube.com/watch?v=mJilHWIBWO8'),
     ],
     'hamstrings': [
-      Exercise('Romanian Deadlifts', '', 'https://www.youtube.com/watch?v=g5u75sgpn04'),
-      Exercise('Leg Curls', '', 'https://www.youtube.com/watch?v=YQfohLcJQlI'),
-      Exercise('Good Mornings', '', 'https://www.youtube.com/watch?v=7cpldMZjLOs'),
-      Exercise('Deadlifts', '', 'https://www.youtube.com/watch?v=xNwpvDuZJ3k'),
+      Exercise('Romanian Deadlifts', 'images/glutes/Romanian_Deadlifts.jpg', 'https://www.youtube.com/watch?v=g5u75sgpn04'),
+      Exercise('Leg Curls', 'images/hamstrings/Leg_Curls.jpg', 'https://www.youtube.com/watch?v=YQfohLcJQlI'),
+      Exercise('Good Mornings', 'images/hamstrings/Good_Mornings.jpg', 'https://www.youtube.com/watch?v=7cpldMZjLOs'),
+      Exercise('Deadlifts', 'images/lats/Deadlifts.jpg', 'https://www.youtube.com/watch?v=xNwpvDuZJ3k'),
     ],
   };
 
@@ -1981,9 +1983,9 @@ class _BodyDiagramScreenState extends State<BodyDiagramScreen> {
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: 0.75,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
+                childAspectRatio: 0.85,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
               ),
               itemCount: exercises.length,
               itemBuilder: (context, index) {
@@ -2015,11 +2017,8 @@ class _BodyDiagramScreenState extends State<BodyDiagramScreen> {
 
   Widget _buildExerciseCard(Exercise exercise) {
     return GestureDetector(
-      onTap: () async {
-        final uri = Uri.parse(exercise.videoURL);
-        if (await canLaunchUrl(uri)) {
-          await launchUrl(uri, mode: LaunchMode.externalApplication);
-        }
+      onTap: () {
+        _showVideoPlayer(context, exercise);
       },
       child: Card(
         elevation: 4,
@@ -2031,12 +2030,13 @@ class _BodyDiagramScreenState extends State<BodyDiagramScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Exercise image
-            Expanded(
+            AspectRatio(
+              aspectRatio: 1.0,
               child: ClipRRect(
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
                 child: Image.asset(
                   exercise.imagePath,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                   errorBuilder: (context, error, stackTrace) {
                     // Fallback if image doesn't exist
                     return Container(
@@ -2055,7 +2055,7 @@ class _BodyDiagramScreenState extends State<BodyDiagramScreen> {
             ),
             
             // Exercise name
-            Padding(
+            Container(
               padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -2066,11 +2066,12 @@ class _BodyDiagramScreenState extends State<BodyDiagramScreen> {
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
+                      height: 1.2,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 6),
                   Row(
                     children: [
                       const Icon(
@@ -2095,6 +2096,136 @@ class _BodyDiagramScreenState extends State<BodyDiagramScreen> {
         ),
       ),
     );
+  }
+
+  void _showVideoPlayer(BuildContext context, Exercise exercise) {
+    final videoID = YoutubePlayer.convertUrlToId(exercise.videoURL);
+    if (videoID == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Invalid Video URL')),
+      );
+      return;
+    }
+
+    final controller = YoutubePlayerController(
+      initialVideoId: videoID,
+      flags: const YoutubePlayerFlags(
+        autoPlay: false,
+        mute: false,
+        enableCaption: true,
+      ),
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 100), // More padding = smaller dialog
+        child: Container(
+          constraints: const BoxConstraints(
+            maxWidth: 500, // Max width for larger screens
+            maxHeight: 500, // Max height
+          ),
+          decoration: BoxDecoration(
+            color: const Color(0xFF1E293B),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header with close button
+              Container(
+                decoration: const BoxDecoration(
+                  color: Color(0xFF0F172A),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        exercise.name,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close, color: Colors.white, size: 20),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      onPressed: () {
+                        controller.dispose();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              
+              // Video player with constrained height
+              AspectRatio(
+                aspectRatio: 16 / 9, // Standard video aspect ratio
+                child: YoutubePlayer(
+                  controller: controller,
+                  showVideoProgressIndicator: true,
+                  progressIndicatorColor: const Color(0xFF7C3AED),
+                  onReady: () {
+                    print('Player is ready.');
+                  },
+                ),
+              ),
+              
+              // Compact tips section
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Row(
+                      children: [
+                        Icon(
+                          Icons.lightbulb_outline,
+                          size: 16,
+                          color: Color(0xFF7C3AED),
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          'Quick Tips',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Focus on form • Control movement • Breathe consistently',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.grey[400],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ).then((_) {
+      controller.dispose();
+    });
   }
 }
 
